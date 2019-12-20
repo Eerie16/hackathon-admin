@@ -8,4 +8,5 @@ urlpatterns = [
     path('projects/maintenance/<int:project_id>/add',views.AddRectangleView),
     path('projects/<int:project_id>/timeline',views.ShowHeatMapsByTime),
     path('test/', views.TestView),
+    path('datapoints/',views.ShowNearestImage),
 ]
