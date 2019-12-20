@@ -18,11 +18,11 @@ def LoginView(request):
         username = post['username']
         password = post['password']
         print(post)
-        print (username,password)
+        print(username, password)
         user = authenticate( username=username, password=password)
         if user is not None:
             login(request,user)
-            return redirect('dashboard/')
+            return redirect('/dashboard/')
         else:
             return render(request,template_name,{})
     else:
