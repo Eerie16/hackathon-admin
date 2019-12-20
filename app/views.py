@@ -5,8 +5,6 @@ from .models import *
 from datetime import datetime,timedelta
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
-from django.db.models import Q
-# Create your views here.
 
 
 def LoginView(request):
@@ -96,5 +94,11 @@ def ShowHeatMapsByTime(request,project_id):
     print(context)
     return render(request, template_name, context=context)
 
-def TestView(request):
+
+def landing_page(request):
+    return render(request, 'blank.html')
+
+
+@login_required(login_url="/login")
+def dashboard_view(request):
     return render(request, 'index.html')
