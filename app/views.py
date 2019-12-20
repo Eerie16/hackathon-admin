@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import *
 from datetime import datetime,timedelta
@@ -29,6 +29,10 @@ def LoginView(request):
     else:
         return render(request,template_name,{})
 
+
+def LogoutView(request):
+    logout(request)
+    return redirect('/login/')
 
 @login_required()
 def NewProjectView(request):
