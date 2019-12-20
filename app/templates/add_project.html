@@ -1,0 +1,23 @@
+<html>
+    <body>
+        <form action="" method="POST">
+            {% csrf_token %}
+            Name:
+            <input name="name">
+            <br>
+            Type:
+            <select name="type">
+                <option value="construction">
+                    construction
+                </option>
+                <option value="maintenance">
+                    maintenance
+                </option>
+            </select>
+            <br>
+            City: 
+            <input name="city">
+            <input type="submit" value="submit">
+        </form>
+    </body>
+</html>
