@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Heatmaps</title>
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 80%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #formdiv{
+          height: 20%;
+      }
+      #floating-panel {
+        position: absolute;
+        top: 10px;
+        left: 25%;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+        text-align: center;
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+      }
+      #floating-panel {
+        background-color: #fff;
+        border: 1px solid #999;
+        left: 25%;
+        padding: 5px;
+        position: absolute;
+        top: 10px;
+        z-index: 5;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="map"></div>
+    <div id="formdiv">
+        <input type="range" min="1" max="10" value="50" class="slider" id="myRange">
+        <input type="text" id="slidervalue" disabled>
+    </div>
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6us9ytBvAiZqk5kxggIWhv4kk0PYcMTk&libraries=visualization">
+    </script>
+    <script>
+
+      // This example requires the Visualization library. Include the libraries=visualization
+      // parameter when you first load the API. For example:
+      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=visualization">
+
+      var map, heatmap;
+        map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 13,
+          center: {lat: 37.775, lng: -122.434},
+          mapTypeId: 'satellite'
+        });
+    </script>
+    <script
+    src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+    crossorigin="anonymous">
+    </script>
+    <script>
+        var points = [
+            {% for clusters in points %}
+                [
+                    {% for cluster in clusters %}
+                        {location:new google.maps.LatLng({{cluster.lat}}, {{cluster.lng}}), weight:{{cluster.count}}},
+                    {% endfor %}
+                    {location:new google.maps.LatLng(-34,150),weight:1}
+                ],
+            {% endfor %},
+            []
+        ];
+        heatmap = new google.maps.visualization.HeatmapLayer({
+          data:points[0],
+          map:map
+        })
+        heatmap.set('radius',1);
+        heatmap.set('dissipating',false);
+        $("#myRange").change(function(e){
+          var val = parseInt($("#myRange").val());
+          $("#slidervalue").val(val);
+          heatmap.set('map',null);
+          heatmap = new google.maps.visualization.HeatmapLayer({
+            data:points[val],
+            map:map
+          });
+          heatmap.set('radius',1);
+          heatmap.set('dissipating',false);
+        })
+    </script>
+  </body>
+</html>

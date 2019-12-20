@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from .models import *
-from datetime import datetime
+from datetime import datetime,timedelta
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
+from django.db.models import Q
 # Create your views here.
 
 
@@ -68,6 +69,28 @@ def AddRectangleView(request, project_id):
         return HttpResponse("cool")
     return render(request, template_name)
 
+
+def ShowHeatMapsByTime(request,project_id):
+    template_name = 'heatmaps_time.html'
+    clusters = Cluster.objects.filter(project=project_id).order_by('date_formed')
+    counts = []
+    start_date = Project.objects.get(id = project_id).date_started
+    print(start_date)
+    delta = datetime.now() - start_date
+    days = delta.days
+    points = []
+    for day in range(days):
+        temp_arr= [{'lat': x.lat, 'lng': x.lng, 'count': 0} for x in clusters]
+        for cluster_number in range(len(clusters)):
+            gt_time = start_date + timedelta(days=(day-5)) 
+            lt_time = start_date + timedelta(days=(day+5))
+            temp_arr[cluster_number]['count'] = DataPoint.objects.filter(cluster= clusters[cluster_number], date_uploaded__gt=gt_time, date_uploaded__lt= lt_time).count()
+        points.append(temp_arr)
+    context = {
+        'points': points
+    }
+    print(context)
+    return render(request, template_name, context=context)
 
 def TestView(request):
     return render(request, 'index.html')

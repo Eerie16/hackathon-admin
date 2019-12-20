@@ -9,7 +9,7 @@ class Project(models.Model):
     status = models.BooleanField(default=True)
     type = models.CharField(choices=type_choices,max_length=100)
     city = models.CharField(max_length=100)
-    date_started = models.DateField()
+    date_started = models.DateTimeField()
 
     def __str__(self):
         return f'{self.name}  -- {self.type}'
@@ -29,7 +29,7 @@ class Cluster(models.Model):
     lat = models.FloatField()
     lng = models.FloatField()
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    date_formed = models.DateField()
+    date_formed = models.DateTimeField()
 
     def __str__(self):
         return f'{self.lat} {self.lng} -- {self.project}'
@@ -40,7 +40,7 @@ class DataPoint(models.Model):
     image_url = models.URLField()
     lat = models.FloatField()
     lng = models.FloatField()
-    date_uploaded = models.DateField()
+    date_uploaded = models.DateTimeField()
     is_verified = models.BooleanField()
 
     def __str__(self):
