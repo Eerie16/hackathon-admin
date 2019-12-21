@@ -1,31 +1,14 @@
-{% load static %}
-<!DOCTYPE html><html>
-  <head>
-    <title>User-Editable Shapes</title>
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <meta charset="utf-8">
-    <style>
-      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-      #map {
-        height: 80%;
-      }
-      /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-      #formdiv{
-          height:20%;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="map"></div>
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="h3 mb-2 text-gray-800">Select region on map</h1>
+    <div id="map" style="height: 400px"></div>
     <div id="formdiv">
-        <form id="form">
-            <input type="submit" value="Submit">
+        <form action="" method="POST" id="form">
+            {% csrf_token %}
+            <div class="form-row">
+                <input type="submit" class="btn btn-primary mt-4 pt-2 pb-2 pl-4 pr-4 mx-auto" value="Submit">
+            </div>
         </form>
     </div>
     <script
@@ -39,16 +22,26 @@
     <script>
       // This example adds a user-editable rectangle to the map.
         var map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: 44.5452, lng: -78.5389},
-          zoom: 9
+          center: {lat: 29.865, lng: 77.895},
+            zoom: 16
         });
-
         var bounds = {
-          north: 44.599,
-          south: 44.490,
-          east: -78.443,
-          west: -78.649
+          north: 29.866,
+          south: 29.864,
+          east: 77.896,
+          west: 77.894
         };
+
+        const customStyles = [
+          {
+            featureType: "all",
+            elementType: "labels",
+            stylers: [
+              { visibility: "off" }
+            ]
+          }
+        ];
+        map.set('styles',customStyles);
 
         // Define a rectangle and set its editable property to true.
         var rectangle = new google.maps.Rectangle({
@@ -58,26 +51,25 @@
         rectangle.setMap(map);
     </script>
     <script>
-        $("#form").submit(function(e){
-            e.preventDefault();
-            var newbounds = rectangle.getBounds();
-            $.ajax({
-                url:window.location.toString(),
-                method:"POST",
-                data:{
-                    bottom:newbounds.getSouthWest().lat(),
-                    top: newbounds.getNorthEast().lat(),
-                    left: newbounds.getSouthWest().lng(),
-                    right: newbounds.getNorthEast().lng()
-                    },
-                success:function(data, status, xhr){
-                    console.log(data);
-                },
-                error:function(xhr, status, error){
-                    console.log(error);
-                }
-            })
-        })
+        {#$("#form").submit(function(e){#}
+        {#    e.preventDefault();#}
+        {#    var newbounds = rectangle.getBounds();#}
+        {#    $.ajax({#}
+        {#        url:window.location.toString(),#}
+        {#        method:"POST",#}
+        {#        data:{#}
+        {#            bottom:newbounds.getSouthWest().lat(),#}
+        {#            top: newbounds.getNorthEast().lat(),#}
+        {#            left: newbounds.getSouthWest().lng(),#}
+        {#            right: newbounds.getNorthEast().lng()#}
+        {#            },#}
+        {#        success:function(data, status, xhr){#}
+        {#            console.log(data);#}
+        {#        },#}
+        {#        error:function(xhr, status, error){#}
+        {#            console.log(error);#}
+        {#        }#}
+        {#    })#}
+        {#})#}
     </script>
-  </body>
-</html>
+{% endblock %}

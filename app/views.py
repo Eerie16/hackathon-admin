@@ -71,7 +71,7 @@ def AddRectangleView(request, project_id):
     if request.method == 'POST':
         post = request.POST
         print(post)
-        return HttpResponse("cool")
+        return redirect('/dashboard')
     return render(request, template_name)
 
 
