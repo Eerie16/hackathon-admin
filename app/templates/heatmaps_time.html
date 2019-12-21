@@ -44,8 +44,8 @@
     </script>
     <script>
         var map = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: -34, lng: 127},
-            zoom: 4
+            center: {lat: 29.870595, lng: 77.895005},
+            zoom: 16
         });
         const customStyles = [
         {
@@ -79,7 +79,7 @@
           data:points[0],
           map:map
         })
-        heatmap.set('radius',1);
+        heatmap.set('radius',0.001);
         heatmap.set('dissipating',false);
         var days = points.length;
         var i=0;
@@ -94,7 +94,7 @@
             map:map
           });
           $("#datefield").val(dates[i]);
-          heatmap.set('radius',1);
+          heatmap.set('radius',0.001);
           heatmap.set('dissipating',false);
         }
 
@@ -108,7 +108,7 @@
             map:map
           });
           $("#datefield").val(dates[i]);
-          heatmap.set('radius',1);
+          heatmap.set('radius',0.001);
           heatmap.set('dissipating',false);
         }
     </script>

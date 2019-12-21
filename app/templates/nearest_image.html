@@ -1,50 +1,40 @@
-{% load static %}
-<!DOCTYPE html><html>
-  <head>
-    <title>Simple Map</title>
-    <meta name="viewport" content="initial-scale=1.0">
-    <meta charset="utf-8">
-    <style>
-      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-      #map {
-        height: 80%;
-      }
-      /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-      #imagediv{
-        height:20%;
-        background-color: black;
-        width:30%;
-        background-size: cover;
-        background-position: center;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="map"></div>
-    <div id="imagediv">
+{% extends 'base.html' %}
 
+{% block content %}
+    <h1 class="h3 mb-2 text-gray-800">Click on Map to View Nearest Image</h1>
+    <h4 class="h5 mb-2 text-gray-600" id="pid">Project ID: </h4>
+    <h4 class="h5 mb-2 text-gray-600" id="date">Date Initiated: </h4>
+    <!-- <div class="row"> -->
+        
+    <!-- </div> -->
+    <div id="imagediv" style="height:400px;float:right;width:400px;margin-left:30px;background-image: url(https://place-hold.it/100);background-size:contain;background-repeat: no-repeat;background-position: center;">
     </div>
+    <div id="map" style="height: 400px;"></div>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6us9ytBvAiZqk5kxggIWhv4kk0PYcMTk"></script>
     <script
-    src="https://code.jquery.com/jquery-3.4.1.min.js"
-    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-    crossorigin="anonymous">
+            src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous">
     </script>
     <script>
         var map = new google.maps.Map(document.getElementById('map'), {
-            center: {lat: -34.397, lng: 150.644},
-            zoom: 8
+            center: {lat: 29.870895, lng: 77.895032},
+            zoom: 16
         });
-        var poly = new google.maps.Polyline();
-        var poly_coords = [];
-        poly.setMap(map);
-        var markers = [];
+        const customStyles = [
+        {
+            featureType: "all",
+            elementType: "labels",
+            stylers: [
+            { visibility: "off" }
+            ]
+        }
+        ];
+        map.set('styles',customStyles);
+        marker = new google.maps.Marker({
+            position:{lat:0,lng:0},
+            map:map
+        });
         map.addListener('click',function(event){
             var lat = event.latLng.lat();
             var lng = event.latLng.lng();
@@ -58,6 +48,9 @@
                 success:function(data,status, xhr){
                     console.log(data['image']);
                     $("#imagediv").css("background-image","url("+data['image']+")");
+                    $("#pid").text("Project Id: "+data['pid']);
+                    $("#date").text("Date Initiated: "+data['date']);
+                    marker.setPosition({lat:data['lat'],lng:data['lng']});
                 },
                 error:function(xhr, status, error){
                     console.log(xhr);
@@ -65,5 +58,4 @@
             })
         })
     </script>
-</body>
-</html>
+{% endblock %}

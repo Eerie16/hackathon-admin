@@ -15,17 +15,16 @@ def LoginView(request):
 
     template_name = 'login.html'
     if request.method == "POST":
-        # TODO uncomment
-        # post = request.POST
-        # username = post.get('username','dummy')
-        # password = post.get('password', 'pass')
-        # user = authenticate( username=username, password=password)
+        post = request.POST
+        username = post.get('username','dummy')
+        password = post.get('password', 'pass')
+        user = authenticate( username=username, password=password)
         # print(user)
-        # if user is not None:
-        #     login(request,user)
-        return redirect('/dashboard')
-        # else:
-        #     return render(request,template_name,{})
+        if user is not None:
+            login(request,user)
+            return redirect('/dashboard')
+        else:
+            return render(request,template_name,{})
     else:
         return render(request,template_name,{})
 
@@ -35,8 +34,7 @@ def LogoutView(request):
     return redirect('/login/')
 
 
-# TODO uncomment
-# @login_required()
+@login_required()
 def NewProjectView(request):
     template_name = 'add_project.html'
     if request.method == "POST":
@@ -55,6 +53,7 @@ def NewProjectView(request):
 
 
 @csrf_exempt
+@login_required
 def AddPolygonPointsView(request, project_id):
     template_name = 'add_polygon_points.html'
     if request.method == 'POST':
@@ -66,15 +65,17 @@ def AddPolygonPointsView(request, project_id):
 
 
 @csrf_exempt
+@login_required
 def AddRectangleView(request, project_id):
     template_name = 'add_rectangle.html'
     if request.method == 'POST':
         post = request.POST
         print(post)
+        # PolygonPoints()
         return redirect('/dashboard')
     return render(request, template_name)
 
-
+@login_required
 def ShowHeatMapsByTime(request,project_id):
     template_name = 'heatmaps_time.html'
     clusters = Cluster.objects.filter(project=project_id).order_by('date_formed')
@@ -108,12 +109,13 @@ def landing_page(request):
 
 
 # TODO uncomment
-# @login_required(login_url="/login")
+@login_required(login_url="/login")
 def dashboard_view(request):
     return render(request, 'index.html',{'contracts':Project.objects.all()})
 
 
 @csrf_exempt
+@login_required
 def ShowNearestImage(request):
     template_name = "nearest_image.html"
     context={
@@ -125,11 +127,17 @@ def ShowNearestImage(request):
         lng = float(post['lng'])
         datapoints = DataPoint.objects.filter(is_verified=True)
         datapoints = sorted(datapoints, key= lambda i: abs(lat - i.lat)+abs(lng - i.lng))
-        return JsonResponse({'image':datapoints[0].image_url})
+        return JsonResponse({
+            'image':datapoints[0].image_url, 
+            'lat' :datapoints[0].lat,
+            'lng' : datapoints[0].lng,
+            'pid' : datapoints[0].cluster.project.id,
+            'date' : datapoints[0].cluster.project.date_started.strftime("%d %b, %Y"),
+        })
     else:
         return render(request, template_name,context=context)
 
-
+@login_required
 def project_detail(request, project_id):
     template_name = "project_detail.html"
     project = Project.objects.get(id = project_id)
