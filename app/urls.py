@@ -1,4 +1,5 @@
 from django.conf.urls import url
+from django.urls import path
 from app import views
 
 urlpatterns = [
@@ -7,7 +8,7 @@ urlpatterns = [
     url(r'^login', views.LoginView, name='login'),
     url(r'^logout',views.LogoutView),
     url(r'^projects/new',views.NewProjectView),
-    url(r'^projects/construction/<int:project_id>/add',views.AddPolygonPointsView),
-    url(r'^projects/maintenance/<int:project_id>/add',views.AddRectangleView),
-    url(r'^projects/<int:project_id>/timeline',views.ShowHeatMapsByTime),
+    path('projects/construction/<int:project_id>/add',views.AddPolygonPointsView),
+    path('projects/maintenance/<int:project_id>/add',views.AddRectangleView),
+    path('projects/<int:project_id>/timeline',views.ShowHeatMapsByTime),
 ]

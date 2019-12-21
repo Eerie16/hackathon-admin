@@ -13,17 +13,17 @@ def LoginView(request):
 
     template_name = 'login.html'
     if request.method == "POST":
-        post = request.POST
-        username = post['username']
-        password = post['password']
-        print(post)
-        print(username, password)
-        user = authenticate( username=username, password=password)
-        if user is not None:
-            login(request,user)
-            return redirect('/dashboard/')
-        else:
-            return render(request,template_name,{})
+        # TODO uncomment
+        # post = request.POST
+        # username = post.get('username','dummy')
+        # password = post.get('password', 'pass')
+        # user = authenticate( username=username, password=password)
+        # print(user)
+        # if user is not None:
+        #     login(request,user)
+        return redirect('/dashboard')
+        # else:
+        #     return render(request,template_name,{})
     else:
         return render(request,template_name,{})
 
@@ -32,7 +32,8 @@ def LogoutView(request):
     logout(request)
     return redirect('/login/')
 
-@login_required()
+# TODO uncomment
+# @login_required()
 def NewProjectView(request):
     template_name = 'add_project.html'
     if request.method == "POST":
@@ -98,7 +99,8 @@ def ShowHeatMapsByTime(request,project_id):
 def landing_page(request):
     return render(request, 'blank.html')
 
-
-@login_required(login_url="/login")
+# TODO uncomment
+# @login_required(login_url="/login")
 def dashboard_view(request):
-    return render(request, 'index.html')
+    l = Project.objects.all()
+    return render(request, 'index.html',{'contracts':l})
