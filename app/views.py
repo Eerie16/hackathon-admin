@@ -7,6 +7,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
 
 
+global toast_data
+
 def LoginView(request):
     if request.user.is_authenticated:
         return redirect('/dashboard')
@@ -31,6 +33,7 @@ def LoginView(request):
 def LogoutView(request):
     logout(request)
     return redirect('/login/')
+
 
 # TODO uncomment
 # @login_required()
@@ -57,9 +60,8 @@ def AddPolygonPointsView(request, project_id):
     if request.method == 'POST':
         post = request.POST
         print(post)
-        points = post.getlist('coords')   
-        print(points)
-        return HttpResponse('Stay Cool')
+        points = post.getlist('coords')
+        return redirect('/dashboard')
     return render(request, template_name)
 
 
@@ -103,8 +105,7 @@ def landing_page(request):
 # TODO uncomment
 # @login_required(login_url="/login")
 def dashboard_view(request):
-    l = Project.objects.all()
-    return render(request, 'index.html',{'contracts':l})
+    return render(request, 'index.html',{'contracts':Project.objects.all()})
 
 
 @csrf_exempt

@@ -1,45 +1,40 @@
 {% extends 'base.html' %}
 {% block content %}
 
-            <div class="card shadow m-4 w-50">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Add a contract</h6>
+    <div class="card shadow m-4 w-50">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Add a contract</h6>
+        </div>
+        <div class="card-body">
+            <form action="" method="POST" class="user">
+                {% csrf_token %}
+                <div class="form-row">
+                    <label for="name" class="col-sm-2 col-form-label text-primary">Name</label>
+                    <input id="name" name="name" type="text" class="col-sm-10 form-control" placeholder="Project Name">
                 </div>
-                <div class="card-body">
-                    <form action="" method="POST" class="user">
-                        {% csrf_token %}
-                        <div class="form-row">
-                            <label for="name" class="col-sm-2 col-form-label text-primary">Name</label>
-                            <input id="name" name="name" type="text" class="col-sm-10 form-control" placeholder="Project Name">
-                        </div>
-                        <br>
-                        <div class="form-row">
-                            <label for="type" class="col-sm-2 col-form-label text-primary">Type</label>
-                            <select id="type" name="type" class="col-sm-10 form-control">
-                                <option value="construction">
-                                    Construction
-                                </option>
-                                <option value="maintenance">
-                                    Maintenance
-                                </option>
-                            </select>
-                        </div>
-                        <br>
-                         <div class="form-row">
-                            <label for="city" class="col-sm-2 col-form-label text-primary">City</label>
-                            <input id="city" name="city" type="text" class="col-sm-10 form-control" placeholder="City">
-                        </div>
-                        <div class="form-row">
-                        <input type="submit" class="btn btn-primary  mt-4 p-2 mx-auto" value="Submit">
-                            </div>
-                    </form>
+                <br>
+                <div class="form-row">
+                    <label for="type" class="col-sm-2 col-form-label text-primary">Type</label>
+                    <select id="type" name="type" class="col-sm-10 form-control">
+                        <option value="construction">
+                            Construction
+                        </option>
+                        <option value="maintenance">
+                            Maintenance
+                        </option>
+                    </select>
                 </div>
-            </div>
+                <br>
+                <div class="form-row">
+                    <label for="city" class="col-sm-2 col-form-label text-primary">City</label>
+                    <input id="city" name="city" type="text" class="col-sm-10 form-control" placeholder="City">
+                </div>
+                <div class="form-row">
+                    <input type="submit" class="btn btn-primary mt-4 pt-2 pb-2 pl-4 pr-4 mx-auto" value="Submit">
+                </div>
+            </form>
+        </div>
+    </div>
 
-        <!-- End of Main Content -->
-        <a href="/projects/new">
-            <button type="button" class="btn btn-main btn-primary">
-                <i class="fa fa-plus"></i>
-            </button>
-        </a>
+    <!-- End of Main Content -->
 {% endblock %}
