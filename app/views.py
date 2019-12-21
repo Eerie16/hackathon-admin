@@ -84,7 +84,9 @@ def ShowHeatMapsByTime(request,project_id):
     delta = datetime.now() - start_date
     days = delta.days
     points = []
+    dates=[]
     for day in range(days):
+        dates.append(start_date + timedelta(days=day))
         temp_arr= [{'lat': x.lat, 'lng': x.lng, 'count': 0} for x in clusters]
         for cluster_number in range(len(clusters)):
             gt_time = start_date + timedelta(days=(day-5)) 
@@ -92,7 +94,10 @@ def ShowHeatMapsByTime(request,project_id):
             temp_arr[cluster_number]['count'] = DataPoint.objects.filter(cluster= clusters[cluster_number], date_uploaded__gt=gt_time, date_uploaded__lt= lt_time).count()
         points.append(temp_arr)
     context = {
-        'points': points
+        'project':Project.objects.get(id=project_id),
+        'points': points,
+        'contracts':Project.objects.all(),
+        'dates': dates,
     }
     print(context)
     return render(request, template_name, context=context)
@@ -111,6 +116,9 @@ def dashboard_view(request):
 @csrf_exempt
 def ShowNearestImage(request):
     template_name = "nearest_image.html"
+    context={
+        'contracts':Project.objects.all()
+    }
     if request.method == "POST":
         post = request.POST
         lat = float(post['lat'])
@@ -119,4 +127,15 @@ def ShowNearestImage(request):
         datapoints = sorted(datapoints, key= lambda i: abs(lat - i.lat)+abs(lng - i.lng))
         return JsonResponse({'image':datapoints[0].image_url})
     else:
-        return render(request, template_name)
+        return render(request, template_name,context=context)
+
+
+def project_detail(request, project_id):
+    template_name = "project_detail.html"
+    project = Project.objects.get(id = project_id)
+    context = {
+        'project':project ,
+        'contracts':Project.objects.all(),
+        'datapoints': DataPoint.objects.filter(is_verified = True, cluster__project = project).order_by('-date_uploaded')
+    }
+    return render(request, template_name, context = context)

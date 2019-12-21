@@ -10,6 +10,8 @@ urlpatterns = [
     url(r'^projects/new',views.NewProjectView),
     path('projects/construction/<int:project_id>/add',views.AddPolygonPointsView),
     path('projects/maintenance/<int:project_id>/add',views.AddRectangleView),
-    path('projects/<int:project_id>/timeline',views.ShowHeatMapsByTime),
+    path('projects/<int:project_id>/heatmap',views.ShowHeatMapsByTime),
     path('datapoints/',views.ShowNearestImage),
+    path('projects/<int:project_id>',views.project_detail),
+    path('nearest/',views.ShowNearestImage),
 ]

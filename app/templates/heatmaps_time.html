@@ -1,76 +1,62 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Heatmaps</title>
-    <style>
-      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-      #map {
-        height: 80%;
-      }
-      /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-      #formdiv{
-          height: 20%;
-      }
-      #floating-panel {
-        position: absolute;
-        top: 10px;
-        left: 25%;
-        z-index: 5;
-        background-color: #fff;
-        padding: 5px;
-        border: 1px solid #999;
-        text-align: center;
-        font-family: 'Roboto','sans-serif';
-        line-height: 30px;
-        padding-left: 10px;
-      }
-      #floating-panel {
-        background-color: #fff;
-        border: 1px solid #999;
-        left: 25%;
-        padding: 5px;
-        position: absolute;
-        top: 10px;
-        z-index: 5;
-      }
-    </style>
-  </head>
+{% extends 'base.html' %}
 
-  <body>
-    <div id="map"></div>
-    <div id="formdiv">
-        <input type="range" min="1" max="10" value="50" class="slider" id="myRange">
-        <input type="text" id="slidervalue" disabled>
+{% block content %}
+    <h1 class="h3 mb-2 text-gray-800">Heatmap Variation over Time</h1>
+    <h4 class="h5 mb-2 text-gray-600">Project ID: {{project.id}}</h4>
+    <h4 class="h5 mb-2 text-gray-600">Date Initiated: {{project.date_started | date}}</h4>
+    <div id="map" style="height: 400px;"></div>
+    <div class="row" style="margin-top: 20px;">
+      <div class="col xl-12 md-12 mb-12">
+        <div class="progress mb-4">
+          <div class="progress-bar" role="progressbar" style="width: 10%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="progressbar"></div>
+        </div>
+      </div>
     </div>
+    <div class="row center">
+      <div class="col xl-3 md-4 mb-4" style="width:50%">
+        <center>
+          <input class="input-field" id="datefield" disabled> 
+        </center>
+      </div>  
+    </div>
+    <div class="row">
+      <button class="btn btn-primary mt-4 pt-2 pb-2 pl-4 pr-4 mx-auto" onclick="prevfunc()">Previous Day</button>
+      <button class="btn btn-primary mt-4 pt-2 pb-2 pl-4 pr-4 mx-auto" onclick="nextfunc()">Next Day</button>
+    </div>
+    <!-- <div class="row">
+        <div class="col xl-6 md-6 mb-12">
+            <div class="form-row">
+                <div class="col xl-3 md-3 mb-6">
+                  <button class="btn btn-primary" value="Submit" id="prev-btn"> Previous</button>
+                </div>
+                <div class="col xl-3 md-3 mb-6 border-bottom-info"></div>
+                <div class="col xl-3 md-3 mb-6">
+                  <button class="btn btn-primary" value="Submit" id="next-btn">Next</button>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6us9ytBvAiZqk5kxggIWhv4kk0PYcMTk&libraries=visualization"></script>
     <script
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6us9ytBvAiZqk5kxggIWhv4kk0PYcMTk&libraries=visualization">
+            src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous">
     </script>
     <script>
-
-      // This example requires the Visualization library. Include the libraries=visualization
-      // parameter when you first load the API. For example:
-      // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=visualization">
-
-      var map, heatmap;
-        map = new google.maps.Map(document.getElementById('map'), {
-          zoom: 13,
-          center: {lat: 37.775, lng: -122.434},
-          mapTypeId: 'satellite'
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: -34, lng: 127},
+            zoom: 4
         });
-    </script>
-    <script
-    src="https://code.jquery.com/jquery-3.4.1.min.js"
-    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-    crossorigin="anonymous">
-    </script>
-    <script>
+        const customStyles = [
+        {
+            featureType: "all",
+            elementType: "labels",
+            stylers: [
+            { visibility: "off" }
+            ]
+        }
+        ];
+        map.set('styles',customStyles);
         var points = [
             {% for clusters in points %}
                 [
@@ -82,23 +68,48 @@
             {% endfor %},
             []
         ];
+        var dates=[
+          {% for date in dates %}
+            "{{date | date}}",
+          {% endfor %}
+          "20. Dec,2019"
+        ];
+
         heatmap = new google.maps.visualization.HeatmapLayer({
           data:points[0],
           map:map
         })
         heatmap.set('radius',1);
         heatmap.set('dissipating',false);
-        $("#myRange").change(function(e){
-          var val = parseInt($("#myRange").val());
-          $("#slidervalue").val(val);
+        var days = points.length;
+        var i=0;
+        console.log("days",days);
+        function nextfunc(){
+          i=i+1;
+          progress = (i/days)*100;
+          $("#progressbar").css('width',progress+"%");
           heatmap.set('map',null);
           heatmap = new google.maps.visualization.HeatmapLayer({
-            data:points[val],
+            data:points[i],
             map:map
           });
+          $("#datefield").val(dates[i]);
           heatmap.set('radius',1);
           heatmap.set('dissipating',false);
-        })
+        }
+
+        function prevfunc(){
+          i=i-1;
+          progress = (i/days)*100;
+          $("#progressbar").css('width',progress+"%");
+          heatmap.set('map',null);
+          heatmap = new google.maps.visualization.HeatmapLayer({
+            data:points[i],
+            map:map
+          });
+          $("#datefield").val(dates[i]);
+          heatmap.set('radius',1);
+          heatmap.set('dissipating',false);
+        }
     </script>
-  </body>
-</html>
+{% endblock %}

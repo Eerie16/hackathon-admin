@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="h3 mb-2 text-gray-800">Latest Verified Images</h1>
+    <h4 class="h5 mb-2 text-gray-600">Project ID: {{project.id}}</h4>
+    <h4 class="h5 mb-2 text-gray-600">Date Initiated: {{project.date_started | date}}</h4>
+    <!-- <div class="row"> -->
+        <div id="imagediv" style="height:400px;float:left;width:400px;margin-right:30px;background-image: url(https://place-hold.it/100);background-size:contain;background-repeat: no-repeat;background-position: center;">
+
+        </div>
+    <!-- </div> -->
+    <div id="map" style="height: 400px;"></div>
+    <div class="row">
+        <div class="col xl-6 md-6 mb-12">
+            <div class="form-row">
+                <button class="btn btn-primary mt-4 pt-2 pb-2 pl-4 pr-4 mx-auto" value="Submit" id="prev-btn"> Previous</button>
+                <button class="btn btn-primary mt-4 pt-2 pb-2 pl-4 pr-4 mx-auto" value="Submit" id="next-btn">Next</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6us9ytBvAiZqk5kxggIWhv4kk0PYcMTk"></script>
+    <script
+            src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous">
+    </script>
+    <script>
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 29.865, lng: 77.895},
+            zoom: 16
+        });
+        const customStyles = [
+        {
+            featureType: "all",
+            elementType: "labels",
+            stylers: [
+            { visibility: "off" }
+            ]
+        }
+        ];
+        map.set('styles',customStyles);
+        images=[
+            {% for point in datapoints %}
+                "{{point.image_url}}",
+            {% endfor %},
+            "https://place-hold.it/100"
+        ];
+
+        coords = [
+            {% for point in datapoints %}
+                {lat: {{point.lat}}, lng: {{point.lng}}},
+            {% endfor %},
+            {lat:34,lng:115}
+        ];
+        var i=-1;
+        var marker = new google.maps.Marker({
+            position:{lat:0, lng:0},
+        });
+        $("#next-btn").click(function(e){
+            i=i+1;
+            $("#imagediv").css("background-image","url("+images[i]+")");
+            marker.setPosition(coords[i]);
+            marker.setMap(map);
+        })
+
+        $("#prev-btn").click(function(e){
+            i=i-1;
+            $("#imagediv").css("background-image","url("+images[i]+")");
+            marker.setPosition(coords[i]);
+            marker.setMap(map);
+        })
+
+    </script>
+{% endblock %}
