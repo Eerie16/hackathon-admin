@@ -11,4 +11,5 @@ urlpatterns = [
     path('projects/construction/<int:project_id>/add',views.AddPolygonPointsView),
     path('projects/maintenance/<int:project_id>/add',views.AddRectangleView),
     path('projects/<int:project_id>/timeline',views.ShowHeatMapsByTime),
+    path('datapoints/',views.ShowNearestImage),
 ]

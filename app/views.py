@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from .models import *
 from datetime import datetime,timedelta
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 
 
 def LoginView(request):
@@ -99,8 +99,23 @@ def ShowHeatMapsByTime(request,project_id):
 def landing_page(request):
     return render(request, 'blank.html')
 
+
 # TODO uncomment
 # @login_required(login_url="/login")
 def dashboard_view(request):
     l = Project.objects.all()
     return render(request, 'index.html',{'contracts':l})
+
+
+@csrf_exempt
+def ShowNearestImage(request):
+    template_name = "nearest_image.html"
+    if request.method == "POST":
+        post = request.POST
+        lat = float(post['lat'])
+        lng = float(post['lng'])
+        datapoints = DataPoint.objects.filter(is_verified=True)
+        datapoints = sorted(datapoints, key= lambda i: abs(lat - i.lat)+abs(lng - i.lng))
+        return JsonResponse({'image':datapoints[0].image_url})
+    else:
+        return render(request, template_name)
