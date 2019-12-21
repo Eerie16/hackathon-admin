@@ -1,34 +1,62 @@
-{% load static %}
-<!DOCTYPE html><html>
-  <head>
-    <title>Simple Map</title>
-    <meta name="viewport" content="initial-scale=1.0">
-    <meta charset="utf-8">
-    <style>
-      /* Always set the map height explicitly to define the size of the div
-       * element that contains the map. */
-      #map {
-        height: 80%;
-      }
-      /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-      #formdiv{
-          height:20%;
-          /* background-color: black; */
-      }
-    </style>
-  </head>
-  <body>
-    <div id="map"></div>
-    <div id="formdiv">
-        <form action="" method="POST" id="form">
-            <input type="submit" value="Submit">
-        </form>
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Add Construction Project</h1>
+  </div>
+
+
+  <!-- Content Row -->
+
+  <div class="row">
+
+    <!-- Area Chart -->
+    <div class="col-xl-8 col-lg-7">
+      <div class="card shadow mb-4">
+        <!-- Card Header - Dropdown -->
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+          <h6 class="m-0 font-weight-bold text-primary">Choose Points</h6>
+        </div>
+        <!-- Card Body -->
+        <div class="card-body">
+          <div class="chart-area" style="height:200px">
+            <div id ="map" style="height:100%"></div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- Pie Chart -->
+    <div class="col-xl-4 col-lg-5">
+      <div class="card shadow mb-4">
+        <!-- Card Header - Dropdown -->
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+          <h6 class="m-0 font-weight-bold text-primary">Revenue Sources</h6>
+        </div>
+        <!-- Card Body -->
+        <div class="card-body">
+          <div class="chart-pie pt-4 pb-2">
+            <canvas id="myPieChart"></canvas>
+          </div>
+          <div class="mt-4 text-center small">
+            <span class="mr-2">
+              <i class="fas fa-circle text-primary"></i> Direct
+            </span>
+            <span class="mr-2">
+              <i class="fas fa-circle text-success"></i> Social
+            </span>
+            <span class="mr-2">
+              <i class="fas fa-circle text-info"></i> Referral
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6us9ytBvAiZqk5kxggIWhv4kk0PYcMTk"></script>
     <script
     src="https://code.jquery.com/jquery-3.4.1.min.js"

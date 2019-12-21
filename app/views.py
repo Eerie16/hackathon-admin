@@ -34,8 +34,8 @@ def LogoutView(request):
     return redirect('/login/')
 
 @login_required()
-def NewProjectView(request):
-    template_name = 'add_project.html'
+def NewConstructionProjectView(request):
+    template_name = 'add_polygon_points.html'
     if request.method == "POST":
         post = request.POST
         type = post['type']
@@ -43,10 +43,23 @@ def NewProjectView(request):
         city = post['city']
         new_project = Project(name=name, city=city, type=type, date_started=datetime.now())
         new_project.save()
-        if type == "construction":
-            return redirect('/projects/construction/'+str(new_project.id)+"/add")
-        else:
-            return redirect('/projects/maintenance/'+str(new_project.id)+"/add")
+        return HttpResponse('cool')
+    else:
+        return render(request, template_name) 
+
+
+
+@login_required()
+def NewMaintenanceProjectView(request):
+    template_name = 'add_rectangle.html'
+    if request.method == "POST":
+        post = request.POST
+        type = post['type']
+        name = post['name']
+        city = post['city']
+        new_project = Project(name=name, city=city, type=type, date_started=datetime.now())
+        new_project.save()
+        return HttpResponse('cool')
     else:
         return render(request, template_name) 
 
@@ -110,3 +123,8 @@ def ShowNearestImage(request):
 
 def TestView(request):
     return render(request, 'index.html')
+
+    
+@login_required(login_url="/login")
+def dashboard_view(request):
+    return render(request, 'index.html',{'projects':Project.objects.all()})
